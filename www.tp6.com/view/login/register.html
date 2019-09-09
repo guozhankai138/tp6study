@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="{:config('app.app_js_url')}jquery.min.js"></script>
+    <script type="text/javascript" src="{:config('app.app_js_url')}vue.min.js"></script>
+     <script>
+     	$(function(){
+     		$register=new Vue({
+     			el:"#register",
+     			data:{
+
+     			},
+     			created:function(){},
+     			methods:{
+     				//获取短信验证码
+     				getMsCode:function(){
+     					$phone=$('input[name=phone]').val();
+     					$.ajax({
+     						type:"post",
+     						url:"{:url('api/sendms')}",
+     						data:{
+     							phone:$phone
+     						},
+     						success:function(s){
+     							alert(s.msg);
+     						}
+     					})
+     				},
+     				register:function(){
+     					// $username=$('input[name=username]').val();
+                              // $password=$('input[name=password]').val();
+     					$phone=$('input[name=phone]').val();
+     				     $mscode=$('input[name=mscode]').val();
+     					$.ajax({
+     						type:'post',
+     						url:"{:url('api/register')}",
+     						data:{
+     							mscode:$mscode,
+     							phone:$phone
+            //                             username:$username,
+     							// password:$password
+     						},
+     						success:function(s){
+     							alert(s.msg);
+     						}
+     					})
+     				}
+
+     			}
+     		})
+     	})
+     </script>
+</head>
+<body>
+	<form action="" method="post" id="register">
+	<input type="text" name="username" placeholder="用户名"><br>
+	<input type="text" name="password" placeholder="密码"><br>
+	<input type="text" name="phone" placeholder="手机号"><br>
+	<input type="text" name='mscode' placeholder="短信验证码"><button v-on:click="getMsCode">免费获取短信验证码</button><br>
+	<input type="button" value="注册" v-on:click='register'>
+	</form>
+</body>
+</html>

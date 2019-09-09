@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
+	<script type="text/javascript" src="/static/js/vue.min.js"></script>
+	<script>
+		$(function(){
+			$login=new Vue({
+				el:'#login',
+				data:{},
+				created:function(){
+					this.checkToken()
+				},
+				methods:{
+					login:function(){
+						$username=$('input[name=username]').val();
+						$password=$('input[name=password]').val();
+						$.ajax({
+							type:"post",
+							url:"{:url('api/login')}",
+							data:{
+								username:$username,
+								password:$password
+							},
+							success:function(s){
+			                    if(s.code==2000){
+			                      alert('登陆成功');
+			                      localStorage.setItem('token',s.token);
+			                      window.location.href="{:url('index/index')}";    
+			                    }else{
+			                      alert(s.msg);
+			                    }
+			                 }
+						})
+					},
+					checkToken:function(){
+						$token=localStorage.getItem('token');
+						$.ajax({
+							type:"post",
+							url:"{:url('api/checktoken')}",
+							data:{
+								token:$token
+							},
+							success:function(s){
+								if(s.code==2000){
+									window.location.href="{:url('index/index')}";
+								}else{
+									alert(s.msg);
+								}
+							}
+						})
+					}
+				}
+			})
+		})
+	</script>
+</head>
+<body>
+	<form action="" method="post" id='login'>
+		<table>
+			<tr><td>用户名</td><td><input type="text" name="username" placeholder="用户名"></td></tr>
+			<tr><td>密码</td><td><input type="text" name="password" placeholder="密码"></td></tr>
+			<tr><td colspan="2"><button v-on:click='login'>登陆</button></td></tr>
+		</table>
+	</form>
+</body>
+</html>
